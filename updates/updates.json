@@ -1,0 +1,12 @@
+{
+    "addons": {
+      "{8c1e3a77-45b9-4a27-9f4e-8f0f5cb83d7c}": {
+        "updates": [
+          {
+            "version": "1.0",
+            "update_link": "https://raw.githubusercontent.com/UNiXMIT/UNiXNNTP/main/updates/1.0/1aa420af9a0c4d9d8e9d-1.0.xpi"
+          }
+        ]
+      }
+    }
+  }
