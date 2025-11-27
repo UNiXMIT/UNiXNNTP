@@ -1,34 +1,37 @@
 {
-  "name": "Newsgroup Notifications",
-  "short_name": "NNTPNotifications",
-  "version": "1.0",
-  "description": "Thunderbird Newsgroup Notifications",
-  "author": "Martin Turner",
-  "manifest_version": 3,
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "{8c1e3a77-45b9-4a27-9f4e-8f0f5cb83d7c}",
-      "update_url": "https://raw.githubusercontent.com/UNiXMIT/UNiXNNTP/main/updates/updates.json"
+    "manifest_version": 2,
+    "name": "Newsgroup Notifications",
+    "short_name": "NNTPNotifications",
+    "version": "1.0",
+    "description": "Thunderbird Newsgroup Notifications",
+    "author": "Martin Turner",
+    "permissions": [
+        "messagesRead",
+        "accountsRead",
+        "storage",
+        "notifications",
+        "webRequest",
+        "https://discord.com/api/webhooks/*",
+        "https://webhook.lewisakura.moe/*"
+    ],
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "{8c1e3a77-45b9-4a27-9f4e-8f0f5cb83d7d}",
+            "strict_min_version": "115.0"
+        }
+    },
+    "options_ui": {
+        "page": "index.html",
+        "browser_style": true
+    },
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
+    },
+    "icons": {
+        "64": "assets/images/rocket128.png",
+        "32": "assets/images/rocket32.png",
+        "16": "assets/images/rocket16.png"
     }
-  },
-  "permissions": [
-    "messagesRead",
-    "accountsRead",
-    "notifications",
-    "storage",
-    "webRequest"
-  ],
-  "host_permissions": [
-    "https://discord.com/api/webhooks/*",
-    "https://webhook.lewisakura.moe/*"
-  ],
-  "background": {
-    "scripts": ["background.js"]
-  },
-  "icons": {
-    "16": "icons/rocket16.png",
-    "32": "icons/rocket32.png",
-    "48": "icons/rocket48.png",
-    "128": "icons/rocket128.png"
-  }
 }

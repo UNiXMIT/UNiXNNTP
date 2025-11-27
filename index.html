@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notification Chooser</title>
+  <!-- Include Bootstrap CSS from node_modules -->
+  <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <!-- Include your custom stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button"
+        role="tab" aria-controls="settings" aria-selected="true">Settings</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="instruct-tab" data-bs-toggle="tab" data-bs-target="#instruct" type="button"
+        role="tab" aria-controls="instruct" aria-selected="false">Instructions</button>
+    </li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+      <!-- Content for the Settings tab -->
+      <app />
+    </div>
+    <div class="tab-pane fade" id="instruct" role="tabpanel" aria-labelledby="instruct-tab">
+      <!-- Content for the Instructions tab -->
+      <br>
+      <h2 id="configure-your-system">Configure Your System</h2>
+      <p>As NTFNTF takes over notification and alerting responsibilities for mail, you need to disable the existing
+        functionality for Thunderbird. This differs by Operating System.</p>
+      <h3 id="windows-and-linux">Windows and Linux</h3>
+      <ul>
+        <li>Open Thunderbird Settings</li>
+        <li>Under General, scroll down to the &quot;Incoming Mail&quot; section</li>
+        <li>If on <i>Windows</i>, enable &quot;Use the system notification&quot;</li>
+        <li>Disable the following:<ul>
+            <li>Show and Alert</li>
+            <li>Play a Sound</li>
+          </ul>
+        </li>
+        <li>You&#39;re now all set to configure which folders and accounts to alert for in the NTFNTF Extension
+          settings. See &quot;Usage&quot;.</li>
+      </ul>
+      <strong>Linux</strong>
+      <p><img src="assets/images/LinDisable.png" alt="Linux TB Setting to Disable"></p>
+      <strong>Windows</strong>
+      <p><img src="assets/images/WinDisable.png" alt="Windows TB Setting to Disable"></p>
+      <h3 id="macos">MacOS</h3>
+      <p>Mac is a little more involved to disable existing alerting as Thunderbird delegates the settings to MacOS. So
+        we must disable there and also disable a setting hidden on the MacOS Thunderbird builds.</p>
+      <h4 id="disable-system-sound-alerts-for-thunderbird">Disable System Sound Alerts for Thunderbird</h4>
+      <ul>
+        <li>Open the MacOS System Settings</li>
+        <li>Search for Notifications</li>
+        <li>Choose &quot;Notification settings&quot;</li>
+      </ul>
+      <p><img src="assets/images/MacSettingsNotif.png" alt="MacOS Notifcation Settings"></p>
+      <ul>
+        <li>Scroll down and select Thunderbird from the list of apps</li>
+        <li>Disable &quot;Play sound for notification&quot;</li>
+      </ul>
+      <p><img src="assets/images/MacTBSound.png" alt="MacOS Disable Sound Alert"></p>
+      <ul>
+        <li>Close out of System Settings</li>
+      </ul>
+      <h4 id="disable-thunderbird-built-in-mail-notifications">Disable Thunderbird Built-in Mail Notifications</h4>
+      <ul>
+        <li>Open Thunderbird Settings</li>
+        <li>Scroll all the way to the bottom of General</li>
+        <li>Click the Config Editor button</li>
+        <li>Search for <code>mail.biff.show_alert</code></li>
+        <li>Toggle this so it is set to False</li>
+      </ul>
+      <p><img src="assets/images/MacAdvSettings.png" alt="MacOS Disable Mail Notification"></p>
+      <ul>
+        <li>You&#39;re now all set to configure which folders and accounts to alert for in the NTFNTF Extension
+          settings. See &quot;Usage&quot;.</li>
+      </ul>
+      <h2 id="usage">Usage</h2>
+      <p>After installing the NTFNTF extension, configure it by navigating to the extension options within Thunderbird’s
+        Add-on Manager. Here, you can select which folders you want to receive notifications for. </p>
+      <p><img src="assets/images/TBNTFSettings1.png" alt="NTFNTF Settings"></p>
+      <p><img src="assets/images/TBNTFSettings2.png" alt="NTFNTF Settings"></p>
+      <h3 id="global-settings">Global Settings</h3>
+      <p>In this top section you can choose to disable the entire extension - this will keep your account and folder
+        settings.
+        You can also choose to Reset All which will set all folders and accounts back to defaults. </p>
+      <h3 id="account-settings">Account Settings</h3>
+      <p>The various options should be fairly obvious. Choose your sound and notification details for each
+        account.<br>Use the <code>All / None</code> links to select or de-select all sub-folders.</p>
+      <h3 id="account-settings">Custom Sounds</h3>
+      <p>Click the cog icon next to <code>Custom</code>, in each account's sound dropdown to choose an audio file for that account's alert sound.
+      <br>Note that this gets uploaded into the extensions storage so you dont need to keep the original file.</p>
+      
+      <h2 id="known-limitations">Known Limitations</h2>
+      <h3 id="local-folders-are-not-supported">Local Folders are not supported</h3>
+      <p>Local Folders and RSS feeds are unable to trigger notifications and so are filtered from the account list. This is unfortunately a limitation with Thunderbird&#39;s API and Im yet to think of a workaround.</p>
+      <h3 id="some-folders-don-t-generate-notifications">Some Folders don&#39;t generate notifications</h3>
+      <p>If a folder doesnt generate notifications it may be that messages are moved there before syncing to Thunderbird. You can try the following.  </p>
+      <ul>
+      <li>Right click the affected folder</li>
+      <li>Select <code>Properties</code></li>
+      <li>Check the box for <code>When getting messages for this account always check this folder</code> and save</li>
+      </ul>
+    </div>
+  </div>
+  <script type="module" src="main.js"></script>
+</body>
+
+</html>

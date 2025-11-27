@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FolderList component renders correctly 1`] = `
+<ul>
+  <li
+    class="folder-item subfolder"
+    data-open="true"
+  >
+    <span
+      class="liexpand caret caret-down"
+    />
+    <span>
+      <input
+        class="me-2"
+        data-mailbox-path="Inbox"
+        type="checkbox"
+      />
+      Inbox
+    </span>
+    <span
+      class="select-deselect px-2"
+    >
+      <a
+        class="small all link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+        href="#"
+      >
+        All
+      </a>
+      <span
+        class="small"
+      >
+         / 
+      </span>
+      <a
+        class="small none link-underline link-underline-opacity-0 link-underline-opacity-75-hover"
+        href="#"
+      >
+        None
+      </a>
+    </span>
+    <ul
+      class="nested active"
+    >
+      <li
+        class="folder-item"
+        data-open="true"
+      >
+        <span
+          class="caret invisible"
+        />
+        <span>
+          <input
+            class="me-2"
+            data-mailbox-path="Important"
+            type="checkbox"
+          />
+          Important
+        </span>
+      </li>
+      <li
+        class="folder-item"
+        data-open="true"
+      >
+        <span
+          class="caret invisible"
+        />
+        <span>
+          <input
+            class="me-2"
+            data-mailbox-path="Work"
+            type="checkbox"
+          />
+          Work
+        </span>
+      </li>
+    </ul>
+  </li>
+</ul>
+`;

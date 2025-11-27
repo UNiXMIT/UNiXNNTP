@@ -1,0 +1,113 @@
+/* Remove default bullets */
+ul {
+    list-style-type: none;
+}
+
+ul.nested.active {
+    padding-left: 1.5rem;
+}
+
+/* Style the caret/arrow */
+.caret {
+    cursor: pointer;
+    user-select: none;
+    /* Prevent text selection */
+}
+
+/* Create the caret/arrow with a unicode, and style it */
+.caret::before {
+    content: "\27a4";
+    color: black;
+    display: inline-block;
+    margin-right: 6px;
+}
+
+/* Rotate the caret/arrow icon when clicked on (using JavaScript) */
+.caret-down::before {
+    transform: rotate(90deg);
+}
+
+/* Hide the nested list */
+.nested {
+    display: none;
+}
+
+/* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
+.active {
+    display: block;
+}
+
+/* Custom styles for the volume range slider */
+.vol-range-thumb::-webkit-slider-thumb {
+    /* Shadow and border for WebKit browsers */
+    box-shadow: 0 0 0 1px #fff;
+    /* White border-like shadow */
+    /* border: 2px solid #000; */
+    /* Black border */
+}
+
+.vol-range-thumb::-moz-range-thumb {
+    /* Shadow and border for Firefox */
+    box-shadow: 0 0 0 1px #fff;
+    /* White border-like shadow */
+    /* border: 2px solid #000; */
+    /* Black border */
+}
+
+.vol-range-thumb::-ms-thumb {
+    /* Shadow and border for IE */
+    box-shadow: 0 0 0 1px #fff;
+    /* White border-like shadow */
+    /* border: 2px solid #000; */
+    /* Black border */
+}
+
+#volRange {
+    height: 1rem;
+}
+
+.treeview.border {
+    border-color: rgb(123, 122, 134) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: rgb(35, 34, 42);
+        color: #fff;
+    }
+
+    .caret::before {
+        color: white;
+    }
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.labelcontainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.labeltext {
+    flex: 1;
+}
+.labelicons img{
+    height: 0.8rem;
+}
+
+.labelicons img:hover {
+    height: 1rem;
+}
+.labelicons img:active {
+    transform: translate(2px, 2px);
+    height: 1rem;
+}
+
+/* Reset/override :active state styles when the play icon is clicked
+.dropdown-item:has(.playicon):active {
+    background-color: initial;
+    color: inherit;
+  } */
