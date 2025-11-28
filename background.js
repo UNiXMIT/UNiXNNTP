@@ -1,4 +1,4 @@
-const imageLoc = 'https://raw.githubusercontent.com/UNiXMIT/UNiXSF/refs/heads/main/SFExt/icons/rocket128.png'
+const imageLoc = 'https://raw.githubusercontent.com/UNiXMIT/UNiXSF/main/SFExt/icons/rocket128.png'
 const DISCORD_WEBHOOK_URL = "https://webhook.lewisakura.moe/api/webhooks/1443945438062444705/IxYX-dMn3c3z0nfpVYudDkoz8fv4vKU7cKTtCd248M03BU-TfU7PGobht8IYV2cFHI1b";
 // Object to keep the messageId for each notification
 const notificationMessageMap = {}
