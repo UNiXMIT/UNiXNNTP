@@ -1,170 +1,141 @@
-/* global browser */
-
-import { setUseMocks, storageUtil, syncAccountsStorage } from './utils/storage'
-import { testAccounts } from './mocks/testAccounts'
-import { defaultSettings } from './constants/settings'
-
-const DISCORD_WEBHOOK_URL = "https://webhook.lewisakura.moe/api/webhooks/1437829638029054094/nRe66VXWRbY83FBMnAhW5TFdgMt7iPl-p_qHtSjciDTuk_NTjL100ryMWSg4lsPvOvrM";
-
-const useMocks = process.env.NODE_ENV === 'test' || false
-setUseMocks(useMocks)
+const imageLoc = 'https://raw.githubusercontent.com/UNiXMIT/UNiXSF/refs/heads/main/SFExt/icons/rocket128.png'
+const DISCORD_WEBHOOK_URL = "https://webhook.lewisakura.moe/api/webhooks/1443945438062444705/IxYX-dMn3c3z0nfpVYudDkoz8fv4vKU7cKTtCd248M03BU-TfU7PGobht8IYV2cFHI1b";
 // Object to keep the messageId for each notification
 const notificationMessageMap = {}
 // Array to keep the seen headers to prevent duplicate notifications
 let seenHeaders = []
+// Configuration for the rate limit
+const MAX_CALLS = 5;
+const TIME_WINDOW_MS = 10000; // 5 seconds
 
-// Helper function to recursively search for a folder by path
-function findFolderByPath (folders, path) {
-  for (const key in folders) {
-    const folder = folders[key]
-    if (folder.path === path) {
-      return folder.enabled ? folder : null
-    }
-    if (folder.subFolders) {
-      const subFolder = findFolderByPath(folder.subFolders, path)
-      if (subFolder) {
-        return subFolder
-      }
-    }
-  }
-  return null
-}
-
-async function shouldNotify (folder) {
-  const mailboxesString = await storageUtil.get('mailboxes') || '{}'
-  const mailboxes = JSON.parse(mailboxesString)
-
-  if (Object.prototype.hasOwnProperty.call(mailboxes, folder.accountId)) {
-    const accountInfo = mailboxes[folder.accountId]
-    const matchingFolder = findFolderByPath(accountInfo.enabledFolders, folder.path)
-
-    if (matchingFolder) {
-      return {
-        sound: accountInfo.sound,
-        customSound: accountInfo.customSound,
-        volume: accountInfo.volume,
-        notificationDetails: accountInfo.notificationDetails,
-        folderDetails: matchingFolder,
-        accountName: accountInfo.accountName
-      }
-    }
-  }
-  return null
-}
+// State variables for the rate limiter
+let callQueue = []; // Stores the timestamps of recent successful calls
+let pendingQueue = []; // Stores arguments for notifications waiting to be sent
+let isProcessing = false;
 
 async function onNewMailReceived (folder, messageList) {
-  const settingsString = await storageUtil.get('settings') || JSON.stringify(defaultSettings)
-  const settings = JSON.parse(settingsString)
-  const imageLoc = 'assets/images/rocket128.png'
   const platform = (await browser.runtime.getPlatformInfo()).os
-
-  if (settings.enabled) {
-    // We must sync the accounts to our extensions storage with enabled defaults.
-    // This is so any changed account/folders exist for processing if its not been
-    // triggered via the options UI.
-    await syncAccounts()
-
-    // Now we can start processing the message.
-    const notifyDetails = await shouldNotify(folder)
-
-    // Delay so we can work with mail filters processing. See bug below
-    // Hope to be able to remove this at some point.
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    if (notifyDetails) {
-      let realMessageCount = 0
-
-      for (const message of messageList.messages) {
-        // Check if this message actually returns a real message object. If not this could
-        // be related to bug: https://bugzilla.mozilla.org/show_bug.cgi?id=1881532
-        const realMessage = await browser.messages.get(message.id)
-        if (realMessage.headerMessageId === '') {
-          console.log(`Message${message.id} appears to have moved. Skipping alert`)
-          continue
-        }
-        realMessageCount++
-
-        // check is message has been seen before
-        if (!seenHeaders.includes(message.headerMessageId)) {
-          // Add header to list of seen headers
-          seenHeaders.push(message.headerMessageId)
-          // Keep a max of 1000 headers
-          seenHeaders = seenHeaders.slice(-1000)
-        } else {
-          // if this is a rogue replay of a message we've seen, remove from the real message count
-          // to avoid playing an alert sound for it if no other messages are valid in the messagelist
-          realMessageCount--
-          console.log(`Message ${message.id} has a header that has already been processed. Skipping`)
-          continue
-        }
-
-        // Handling notifications based on details preference:
-        if (notifyDetails.notificationDetails !== 'NoDetails') {
-          let messageDetails = ''
-          if (notifyDetails.notificationDetails === 'NameOnly') {
-            messageDetails = `${message.author}`
-          } else {
-            // Default to NameMessagePreview
-            messageDetails = `${message.author} - ${message.subject}`
-            if (messageDetails.length > 100) {
-              messageDetails = messageDetails.substring(0, 97) + '...'
-            }
-          }
-
-          const title = `${notifyDetails.accountName}: ${folder.name}`
-          const notificationId = 'newMailNotification_' + Date.now()
-          if (notifyDetails.notificationDetails !== 'NoPopup') {
-            browser.notifications.create(notificationId, {
-              type: 'basic',
-              iconUrl: ['win'].includes(platform) ? browser.runtime.getURL(imageLoc) : null,
-              title,
-              message: messageDetails
-            }).then(() => {
-              notificationMessageMap[notificationId] = message.id
-            })
-            await fetch(DISCORD_WEBHOOK_URL, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                content: messageDetails,
-                avatar_url: "https://raw.githubusercontent.com/UNiXMIT/UNiXSF/main/SFExt/icons/rocket128.png",
-                username: "Thunderbird",
-              })
-            });
-          }
-        }
-      }
-
-      if (notifyDetails.notificationDetails === 'NoDetails' && realMessageCount > 0) {
-        const mailPlurality = realMessageCount > 1 ? 'mails' : 'mail'
-        browser.notifications.create('newMailSummary_' + Date.now(), {
-          type: 'basic',
-          iconUrl: ['win'].includes(platform) ? browser.runtime.getURL(imageLoc) : null,
-          title: `${notifyDetails.accountName}: ${folder.name}`,
-          message: `${realMessageCount} new ${mailPlurality}`
-        })
-      }
-    } else {
-      console.log(`Notification not on for folder: ${folder.accountId}${folder.path}`)
+  await new Promise(resolve => setTimeout(resolve, 2000))
+  let realMessageCount = 0
+  for (const message of messageList.messages) {
+    // Check if this message actually returns a real message object. If not this could
+    // be related to bug: https://bugzilla.mozilla.org/show_bug.cgi?id=1881532
+    const realMessage = await browser.messages.get(message.id)
+    if (realMessage.headerMessageId === '') {
+      continue
     }
-  } else {
-    console.log('Extension Not Enabled')
+    realMessageCount++
+
+    // check is message has been seen before
+    if (!seenHeaders.includes(message.headerMessageId)) {
+      // Add header to list of seen headers
+      seenHeaders.push(message.headerMessageId)
+      // Keep a max of 1000 headers
+      seenHeaders = seenHeaders.slice(-1000)
+    } else {
+      // if this is a rogue replay of a message we've seen, remove from the real message count
+      // to avoid playing an alert sound for it if no other messages are valid in the messagelist
+      realMessageCount--
+      continue
+    }
+
+    // Handling notifications based on details preference:
+    let messageDetails = ''
+    // Default to NameMessagePreview
+    messageDetails = `${message.author} - ${message.subject}`
+    if (messageDetails.length > 100) {
+      messageDetails = messageDetails.substring(0, 97) + '...'
+    }
+  
+    const title = `${folder.name}`
+    const notificationId = 'newMailNotification_' + Date.now()
+    browser.notifications.create(notificationId, {
+      type: 'basic',
+      iconUrl: ['win'].includes(platform) ? imageLoc : null,
+      title,
+      message: messageDetails
+    }).then(() => {
+      notificationMessageMap[notificationId] = message.id
+    })
+
+    // Send to Discord Webhook
+    if (DISCORD_WEBHOOK_URL) {
+      rateLimitedNotifyDiscord(title, messageDetails);
+    }
   }
   cleanupOldNotifications()
 }
 
-async function syncAccounts () {
-  let accountsData
-  if (process.env.NODE_ENV === 'test' || useMocks) {
-    accountsData = testAccounts
-  } else {
-    accountsData = await browser.accounts.list()
-    const excludedTypes = ['none', 'rss']
-    accountsData = accountsData.filter(obj => !excludedTypes.includes(obj.type))
-  }
-  await syncAccountsStorage(accountsData)
+function notifyDiscord(title, message) {
+    fetch(DISCORD_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        content: message,
+        avatar_url: imageLoc,
+        username: title,
+      })
+    })
+    .then(response => {
+      if (!response.ok) {
+        console.error('Error sending Discord notification:', response.statusText);
+      }
+    })
+    .catch(error => {
+      console.error('Error sending Discord notification:', error);
+    });
 }
 
-// Dont keep notifications IDs in the map forever
+function processQueue() {
+    if (isProcessing || pendingQueue.length === 0) {
+        return;
+    }
+
+    isProcessing = true;
+
+    // 1. Clean up old timestamps from the call queue
+    const now = Date.now();
+    callQueue = callQueue.filter(timestamp => now - timestamp < TIME_WINDOW_MS);
+
+    // 2. Check if we are within the limit
+    if (callQueue.length < MAX_CALLS) {
+        // We can send the notification!
+        const args = pendingQueue.shift();
+        const [title, message] = args;
+
+        // Call the original function
+        notifyDiscord(title, message);
+
+        // Record the new call timestamp
+        callQueue.push(Date.now());
+
+        // Immediately try to process the next item (to potentially fill up the slot)
+        isProcessing = false;
+        processQueue(); 
+    } else {
+        // We have hit the rate limit. Calculate time until the oldest timestamp expires.
+        const oldestCallTime = callQueue[0];
+        const waitTime = oldestCallTime + TIME_WINDOW_MS - now;
+        
+        console.log(`Rate limit reached. Waiting ${waitTime}ms before retrying.`);
+
+        // Set a timer to retry processing the queue after the necessary wait time
+        setTimeout(() => {
+            isProcessing = false;
+            processQueue();
+        }, waitTime);
+    }
+}
+
+function rateLimitedNotifyDiscord(title, message) {
+    // Add the new request to the queue
+    pendingQueue.push([title, message]);
+    
+    // Attempt to process the queue immediately
+    processQueue();
+}
+
+// Don't keep notifications IDs in the map forever
 function cleanupOldNotifications () {
   const threeDaysInMilliseconds = 3 * 24 * 60 * 60 * 1000 // 3 days
   const currentTime = Date.now()
@@ -226,4 +197,3 @@ browser.notifications.onClosed.addListener((notificationId) => {
     delete notificationMessageMap[notificationId]
   }
 })
-console.log('NTFNTF: Notification service running')
