@@ -1,7 +1,7 @@
 {
     "name": "Newsgroup Notifications",
     "short_name": "NNTPNotifications",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Thunderbird Newsgroup Notifications",
     "author": "Martin Turner",
     "manifest_version": 3,
