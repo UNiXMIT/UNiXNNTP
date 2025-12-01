@@ -1,5 +1,5 @@
 const imageLoc = 'https://raw.githubusercontent.com/UNiXMIT/UNiXSF/main/SFExt/icons/rocket128.png'
-const DISCORD_WEBHOOK_URL = "https://webhook.lewisakura.moe/api/webhooks/1443945438062444705/IxYX-dMn3c3z0nfpVYudDkoz8fv4vKU7cKTtCd248M03BU-TfU7PGobht8IYV2cFHI1b";
+let globalWebhook;
 const notificationMessageMap = {}
 let seenHeaders = []
 const discordMaxRequests = 5;
@@ -7,6 +7,16 @@ const discordMaxTime = 5000;
 let callQueue = []; 
 let pendingQueue = []; 
 let isProcessing = false;
+
+browser.storage.local.get("savedWebhook").then(result => {
+  globalWebhook = result.savedWebhook || null;
+});
+
+browser.storage.onChanged.addListener((changes, area) => {
+  if (area === "local" && changes.savedWebhook) {
+    globalWebhook = changes.savedWebhook.newValue;
+  }
+});
 
 async function onNewMailReceived (folder, messageList) {
   const platform = (await browser.runtime.getPlatformInfo()).os
@@ -42,7 +52,7 @@ async function onNewMailReceived (folder, messageList) {
     }).then(() => {
       notificationMessageMap[notificationId] = message.id
     })
-    if (DISCORD_WEBHOOK_URL) {
+    if (globalWebhook) {
       rateLimitedNotifyDiscord(title, messageDetails);
     }
   }
@@ -50,7 +60,7 @@ async function onNewMailReceived (folder, messageList) {
 }
 
 function notifyDiscord(title, message) {
-    fetch(DISCORD_WEBHOOK_URL, {
+    fetch(globalWebhook, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

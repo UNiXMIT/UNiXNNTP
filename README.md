@@ -4,6 +4,6 @@
 This is a Thunderbird extension that enables a dual-channel notification system:  
 
 1. Native Windows Notifications: Provides immediate, local desktop alerts.
-2. Discord Webhook Integration: Optionally sends remote notifications to a specified Discord channel if the DISCORD_WEBHOOK_URL variable is configured in background.js.
+2. Discord Webhook Integration: Optionally sends remote notifications to a specified Discord channel if a Discord Webhook URL has been configured.
 
 Prerequisite: Thunderbird version 115.0+.  
