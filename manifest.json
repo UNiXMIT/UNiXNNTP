@@ -8,7 +8,11 @@
     "browser_specific_settings": {
         "gecko": {
             "id": "{8c1e3a77-45b9-4a27-9f4e-8f0f5cb83d7d}",
-            "strict_min_version": "115.0"
+            "strict_min_version": "115.0",
+            "data_collection_permissions": {
+                "required": ["none"]
+            },
+            "update_url": "https://raw.githubusercontent.com/UNiXMIT/UNiXNNTP/main/updates/updates.json"
         }
     },
         "options_ui": {

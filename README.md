@@ -10,10 +10,15 @@ Prerequisite: Thunderbird version 115.0+.
 
 ## Install
 
-1. Download the latest *.zip file.
+1. Download the latest *.xpi file.
 2. In Thunderbird, navigate to Settings > Add-ons and Themes > Extensions.  
 3. Click the Cog icon and select 'Install Add-on From File...'
-4. Select the *.zip file from the Windows explorer window and click Open.  
+4. Select the *.xpi file from the Windows explorer window and click Open.  
+5. In the Pop-up that appears in Thunderbird, click 'Add'.
+
+## Update
+
+[How to update add-ons.](https://support.mozilla.org/en-US/kb/how-update-add-ons)
 
 ## Configuration
 
