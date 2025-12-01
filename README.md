@@ -8,6 +8,28 @@ This is a Thunderbird extension that enables a dual-channel notification system:
 
 Prerequisite: Thunderbird version 115.0+.  
 
+## Prerequisites
+
+### Mandatory
+
+Thunderbird native mail notifications have to be turned off, as they do not work for incoming newsgroup articles.   
+
+1. Open Thunderbird Settings
+2. Under General, scroll down to the "Incoming Mail" section
+3. If on Windows, enable "Use the system notification"
+4. Disable the following:
+    - Show and Alert
+    - Play a Sound
+
+### Recommended
+
+The extension works well if you enable Thunderbird to minimise to tray.     
+
+1. Open Thunderbird Settings
+2. Under General, scroll down to the "System Integration" section
+3. Enable:
+    - When Thunderbird is minimized, move it to the tray
+
 ## Install
 
 1. Download the latest *.xpi file.
