@@ -8,14 +8,12 @@ SET NNTPNotify=NNTPNotify-%VER%.zip
 IF "%OPTS%"=="submit" GOTO :SUBMIT
 
 :BUILD
-CALL web-ext build --overwrite-dest --filename %NNTPNotify% --artifacts-dir . --source-dir .\ --ignore-files FFAPI.json *.cmd *.md updates/
+CALL web-ext build --overwrite-dest --filename NNTPNotify-%VER%.zip --artifacts-dir . --source-dir .\ --ignore-files FFAPI.json *.cmd *.md updates/
 MKDIR updates\%VER%
 GOTO :END
 
 :SUBMIT
-FOR /F "usebackq delims=" %%A IN (`jq -r ".AMO_KEY" FFAPI.json`) DO SET AMO_KEY=%%A
-FOR /F "usebackq delims=" %%B IN (`jq -r ".AMO_SECRET" FFAPI.json`) DO SET AMO_SECRET=%%B
-CALL web-ext sign --api-key %AMO_KEY% --api-secret %AMO_SECRET% --upload-source-code %NNTPNotify% --channel unlisted
+CALL web-ext sign --source-dir ./SFExtFF/ --channel unlisted
 GOTO :END
 
 :END

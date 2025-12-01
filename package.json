@@ -1,0 +1,10 @@
+{
+  "name": "nntpnotify",
+  "scripts": {
+    "build": "web-ext build --overwrite-dest --filename NNTPNotify.zip --artifacts-dir . --source-dir ./ --ignore-files FFAPI.json *.cmd *.md updates/",
+    "sign": "web-ext sign --source-dir ./ --ignore-files FFAPI.json *.cmd *.md updates/ --channel unlisted"
+  },
+  "devDependencies": {
+    "web-ext": "^9.2.0"
+  }
+}
