@@ -69,14 +69,6 @@ function notifyDiscord(title, message) {
         username: title,
       })
     })
-    .then(response => {
-      if (!response.ok) {
-        console.error('Error sending Discord notification:', response.statusText);
-      }
-    })
-    .catch(error => {
-      console.error('Error sending Discord notification:', error);
-    });
 }
 
 function processQueue() {
