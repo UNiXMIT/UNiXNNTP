@@ -27,7 +27,7 @@ async function createRelease() {
     });
     const releaseId = release.data.id;
     const releaseFiles = [
-        `updates/${version}/1aa420af9a0c4d9d8e9d-${version}.xpi`
+        `updates/${version}/0158949de7f44eb48392-${version}.xpi`
     ];
     for (const file of releaseFiles) {
         const fileData = fs.readFileSync(file);
