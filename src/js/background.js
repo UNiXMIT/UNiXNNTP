@@ -1,4 +1,4 @@
-const imageLoc = 'https://raw.githubusercontent.com/UNiXMIT/UNiXSF/main/SFExt/icons/rocket128.png'
+const imageLoc = 'https://raw.githubusercontent.com/UNiXMIT/UNiXNNTP/main/src/icons/rocket128.png'
 let globalWebhook;
 const notificationMessageMap = {}
 let seenHeaders = []
