@@ -11,12 +11,14 @@
   "scripts": {
     "build": "web-ext build --overwrite-dest --filename NNTPNotify.zip --artifacts-dir . --source-dir ./src/",
     "presign": "node presign.js",
-    "sign": "web-ext sign --artifacts-dir . --source-dir ./src/ --channel unlisted",
+    "sign": "dotenv -- web-ext sign --artifacts-dir . --source-dir ./src/ --channel unlisted",
     "postsign": "node postsign.js",
     "release": "node release.js"
   },
   "devDependencies": {
     "web-ext": "^9.2.0",
-    "@octokit/rest": "^20.0.0"
+    "@octokit/rest": "^20.0.0",
+    "dotenv": "^17.2.3",
+    "dotenv-cli": "^11.0.0"
   }
 }
