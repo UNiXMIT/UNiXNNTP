@@ -1,14 +1,16 @@
 import fs from 'fs'
 import path from 'path';
 
-const manifestPath = path.join("src", "manifest.json");
-if (!fs.existsSync(manifestPath)) {
-    console.error("manifest.json not found:", manifestPath);
+const packagePath = path.join("package.json");
+if (!fs.existsSync(packagePath)) {
+    console.error("package.json not found:", packagePath);
     process.exit(1);
 }
 
-const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
-const version = manifest.version;
+const version = JSON.parse(fs.readFileSync(packagePath, "utf8")).version;
+
+const updatesDir = path.join("updates", version);
+if (!fs.existsSync(updatesDir)) fs.mkdirSync(updatesDir, { recursive: true });
 
 const verPath = path.join("updates", "updates.json");
 const ver = JSON.parse(fs.readFileSync(verPath, 'utf8'));
@@ -21,12 +23,6 @@ const newEntry = {
 ver.addons[ID].updates.push(newEntry);
 fs.writeFileSync(verPath, JSON.stringify(ver, null, 2));
 
-const npmVerPath = path.join("package.json");
-const npmVer = JSON.parse(fs.readFileSync(npmVerPath, 'utf8'));
-npmVer.version = version;
-fs.writeFileSync(npmVerPath, JSON.stringify(npmVer, null, 2));
-
-const updatesDir = path.join("updates", version);
 const xpiName = `0158949de7f44eb48392-${version}.xpi`;
 if (fs.existsSync(xpiName)) {
     fs.renameSync(xpiName, path.join(updatesDir, xpiName));
