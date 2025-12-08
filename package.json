@@ -13,7 +13,9 @@
     "presign": "node presign.js",
     "sign": "dotenv -- web-ext sign --artifacts-dir . --source-dir ./src/ --channel unlisted",
     "postsign": "node postsign.js",
-    "release": "node release.js"
+    "prerelease": "node prerelease.js",
+    "release": "node release.js",
+    "all": "npm run build && npm run presign && npm run sign && npm run postsign && npm run release"
   },
   "devDependencies": {
     "web-ext": "^9.2.0",
