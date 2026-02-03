@@ -9,6 +9,10 @@
         {
           "version": "1.1.1",
           "update_link": "https://raw.githubusercontent.com/UNiXMIT/UNiXNNTP/main/updates/1.1.1/0158949de7f44eb48392-1.1.1.xpi"
+        },
+        {
+          "version": "1.1.2",
+          "update_link": "https://raw.githubusercontent.com/UNiXMIT/UNiXNNTP/main/updates/1.1.2/0158949de7f44eb48392-1.1.2.xpi"
         }
       ]
     }

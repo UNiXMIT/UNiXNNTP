@@ -19,6 +19,7 @@ browser.storage.onChanged.addListener((changes, area) => {
 });
 
 async function onNewMailReceived (folder, messageList) {
+  console.log(`New mail received in folder: ${folder.name}, ${messageList.messages.length} messages`)
   const platform = (await browser.runtime.getPlatformInfo()).os
   await new Promise(resolve => setTimeout(resolve, 2000))
   let realMessageCount = 0
@@ -150,3 +151,7 @@ browser.notifications.onClosed.addListener((notificationId) => {
     delete notificationMessageMap[notificationId]
   }
 })
+
+const keepAlive = () => setInterval(browser.runtime.getPlatformInfo, 20e3);
+chrome.runtime.onStartup.addListener(keepAlive);
+keepAlive();
