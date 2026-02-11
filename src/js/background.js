@@ -18,6 +18,16 @@ browser.storage.onChanged.addListener((changes, area) => {
   }
 });
 
+browser.storage.local.get("seenHeaders").then(result => {
+  if (Array.isArray(result.seenHeaders)) {
+    seenHeaders = result.seenHeaders
+  }
+})
+
+function saveSeenHeaders() {
+  return browser.storage.local.set({ seenHeaders })
+}
+
 async function onNewMailReceived (folder, messageList) {
   console.log(`New mail received in folder: ${folder.name}, ${messageList.messages.length} messages`)
   const platform = (await browser.runtime.getPlatformInfo()).os
@@ -31,9 +41,11 @@ async function onNewMailReceived (folder, messageList) {
       continue
     }
     realMessageCount++
-    if (!seenHeaders.includes(message.headerMessageId)) {
-      seenHeaders.push(message.headerMessageId)
+    const headerId = message.headerMessageId
+    if (!seenHeaders.includes(headerId)) {
+      seenHeaders.push(headerId)
       seenHeaders = seenHeaders.slice(-1000)
+      saveSeenHeaders()
     } else {
       realMessageCount--
       continue

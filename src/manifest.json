@@ -1,7 +1,7 @@
 {
   "name": "Newsgroup Notifications",
   "short_name": "NNTPNotify",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "Thunderbird Newsgroup Notifications.",
   "author": "Martin Turner",
   "manifest_version": 3,
@@ -22,12 +22,10 @@
     "browser_style": false
   },
   "permissions": [
-    "alarms",
     "messagesRead",
     "accountsRead",
     "storage",
-    "notifications",
-    "tabs"
+    "notifications"
   ],
   "host_permissions": [
     "https://discord.com/api/webhooks/*",
